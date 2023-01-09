@@ -1,1 +1,6 @@
-
+#spring:
+#  data:
+#    mongodb:
+#      database: customers-test
+#    uri: mongodb+srv://<username>:<pwd>@<cluster>:mongodb:net/customers-test
+#
