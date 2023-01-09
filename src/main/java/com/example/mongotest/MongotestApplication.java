@@ -6,6 +6,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.List;
 
 @SpringBootApplication
 public class MongotestApplication {
@@ -15,13 +20,28 @@ public class MongotestApplication {
     }
 
     @Bean
-    CommandLineRunner run(CustomerRepository customerRepository) {
+    CommandLineRunner run(CustomerRepository customerRepository,
+                          MongoTemplate mongoTemplate) {
         return args -> {
-            customerRepository.deleteAll();
-            customerRepository.save(new Customer("John", "Doe", "jd@gmail.com"));
-            customerRepository.save(new Customer("Jane", "Doe","jd2023@gmail.com"));
+//            customerRepository.deleteAll();
+            Customer customer = new Customer("John", "Doe", "jd@gmail.com");
+//            customerRepository.save(new Customer("John", "Doe", "jd@gmail.com"));
+//            customerRepository.save(new Customer("Jane", "Doe","jd2023@gmail.com"));
 
             customerRepository.findAll().forEach(System.out::println);
+
+            Query query = new Query();
+            query.addCriteria(Criteria.where("email").is("jd@gmail.com"));
+            List<Customer> customerList = mongoTemplate.find(query, Customer.class);
+            if (customerList.size() > 1){
+                throw new IllegalStateException("Multiple customers");
+            }
+            if (customerList.isEmpty()){
+                System.out.println("Inserting customer");
+                customerRepository.insert(customer);
+            } else {
+                System.out.println("Already exists");
+            }
         };
     }
 }
