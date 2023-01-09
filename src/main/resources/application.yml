@@ -5,4 +5,6 @@ spring:
       username: admin
       password: admin
       database: customers-test
+      port: 27017
       host: localhost
+      auto-index-creation: true

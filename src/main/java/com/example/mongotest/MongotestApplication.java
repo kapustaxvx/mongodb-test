@@ -18,8 +18,8 @@ public class MongotestApplication {
     CommandLineRunner run(CustomerRepository customerRepository) {
         return args -> {
             customerRepository.deleteAll();
-            customerRepository.save(new Customer("John", "Doe"));
-            customerRepository.save(new Customer("Jane", "Doe"));
+            customerRepository.save(new Customer("John", "Doe", "jd@gmail.com"));
+            customerRepository.save(new Customer("Jane", "Doe","jd2023@gmail.com"));
 
             customerRepository.findAll().forEach(System.out::println);
         };
