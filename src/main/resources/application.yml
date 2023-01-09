@@ -1,6 +1,8 @@
-#spring:
-#  data:
-#    mongodb:
-#      database: customers-test
-#    uri: mongodb+srv://<username>:<pwd>@<cluster>:mongodb:net/customers-test
-#
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: admin
+      password: admin
+      database: customers-test
+      host: localhost
