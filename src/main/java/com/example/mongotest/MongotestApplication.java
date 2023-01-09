@@ -30,18 +30,29 @@ public class MongotestApplication {
 
             customerRepository.findAll().forEach(System.out::println);
 
-            Query query = new Query();
-            query.addCriteria(Criteria.where("email").is("jd@gmail.com"));
-            List<Customer> customerList = mongoTemplate.find(query, Customer.class);
-            if (customerList.size() > 1){
-                throw new IllegalStateException("Multiple customers");
-            }
-            if (customerList.isEmpty()){
-                System.out.println("Inserting customer");
-                customerRepository.insert(customer);
-            } else {
-                System.out.println("Already exists");
-            }
+            usingMongoTemplateAndQuery(customerRepository, mongoTemplate, customer);
+            customerRepository.findCustomerByEmail("jd@gmail.com").ifPresentOrElse(
+                    s -> {
+                        System.out.println("Already exists");
+                    }, () -> {
+                        System.out.println("Inserting customer");
+                        customerRepository.insert(customer);}
+            );
         };
+    }
+
+    private static void usingMongoTemplateAndQuery(CustomerRepository customerRepository, MongoTemplate mongoTemplate, Customer customer) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("email").is("jd@gmail.com"));
+        List<Customer> customerList = mongoTemplate.find(query, Customer.class);
+        if (customerList.size() > 1){
+            throw new IllegalStateException("Multiple customers");
+        }
+        if (customerList.isEmpty()){
+            System.out.println("Inserting customer");
+            customerRepository.insert(customer);
+        } else {
+            System.out.println("Already exists");
+        }
     }
 }
